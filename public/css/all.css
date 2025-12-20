@@ -142,3 +142,17 @@ body {
 	vertical-align:2px;
 }
 
+.container-large {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 90%; 
+    max-width: 1400px; 
+}
+
+@media (max-width: 768px) {
+    .container-large {
+        width: 100%;
+    }
+}

@@ -1,4 +1,4 @@
-<div class="col-md-9">
+<div class="col-md-7">
 	<small><ol class="breadcrumb">
         <li><a href="<?php echo base_url();?>">Feedback</a></li>
         <li class="active"><?php echo $lang['label_post_new_idea']; ?></li>

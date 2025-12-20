@@ -1,4 +1,4 @@
-	<div class="col-md-9">
+	<div class="col-md-7">
 	
 		<div class="breadcrumb-wrapper"><ol class="breadcrumb">
 			<li><a href="<?php echo base_url();?>">Feedback</a></li>

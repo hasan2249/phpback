@@ -71,5 +71,5 @@ See LICENSE.TXT for details.  -->
 
   </div>
   
-  <div class="container">
+  <div class="container-large">
   <div class="row">

@@ -1,4 +1,4 @@
-<div class="col-md-9">
+<div class="col-md-7">
 			<div class="breadcrumb-wrapper"><ol class="breadcrumb">
 			  <li><a href="<?php echo base_url();?>">Feedback</a></li>
 			  <li><a href="<?php echo base_url() . 'home/category/' . $idea->categoryid . "/" . str_replace(" ", "-", $categories[$idea->categoryid]->name); ?>"><?php echo $categories[$idea->categoryid]->name;?></a></li>
@@ -96,7 +96,6 @@
 						<div style="display: inline-block; margin-bottom: 10px; margin-right: 10px; vertical-align: top; text-align: center;">
 							
 							<?php 
-							// التحقق إذا كان المرفق صورة لعرض معاينة، أو مستند لعرض أيقونة
 							$is_image = in_array(strtolower($attachment->file_type), ['.jpg', '.jpeg', '.png', '.gif']);
 							if ($is_image) : 
 							?>
@@ -151,9 +150,9 @@
 				<div class="col-md-1 col-md-offset-2">
 					<label>Tags:</label>
 				</div>
-				<?php foreach ($tags as $tag) : ?>
+				<?php foreach ($idea_tags as $tag) : ?>
 					<div class="col-md-1 col-md-offset-2">
-							<a href="<?php echo base_url() . 'tags/' . $tag->id; ?>"><?php echo $tag->name; ?></a>
+							<a href="<?php echo $tag->url; ?>"><?php echo $tag->name; ?></a>
 					</div>
 				<?php endforeach; ?>
 			</div>

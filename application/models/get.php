@@ -31,16 +31,22 @@ class Get extends CI_Model
     public function getTags($idea_id = 0) {
         $idea_id = (int) $idea_id;
 
-        if ($idea_id == 0) {
-            $result = $this->db->order_by('name', 'ASC')->get('tags')->result();
-        } else {
-            $this->db->select('tags.*');
-            $this->db->from('tags');
+        $this->db->select('tags.*, COUNT(idea_tags_count.idea_id) as total_ideas');
+        $this->db->from('tags');
+        $this->db->join('idea_tags as idea_tags_count', 'idea_tags_count.tag_id = tags.id', 'left');
+        $this->db->join('ideas', 'ideas.id = idea_tags_count.id', 'left');
+        $this->db->where('ideas.status !=', 'new');
+
+        if ($idea_id != 0) {
+            // get tags of specefic idea
             $this->db->join('idea_tags', 'idea_tags.tag_id = tags.id');
             $this->db->where('idea_tags.idea_id', $idea_id);
-            $this->db->order_by('tags.name', 'ASC');
-            $result = $this->db->get()->result();
         }
+
+        $this->db->group_by('tags.id');
+        $this->db->order_by('tags.name', 'ASC');
+        
+        $result = $this->db->get()->result();
 
         $tagList = array();
         foreach ($result as $tag) {
@@ -53,7 +59,7 @@ class Get extends CI_Model
 
         return $tagList;
     }
-    
+
     /**
      * @return \stdClass
      */
@@ -180,6 +186,45 @@ class Get extends CI_Model
         }
 
     	$ideas = $this->db->query($query)->result();
+
+        return $this->decorateIdeas($ideas);
+    }
+
+
+    public function getIdeasByTag($tag_id, $order, $type, $page) {
+        $page = (int) $page;
+        $tag_id = (int) $tag_id;
+        $max = $this->getSetting('max_results');
+        $from = ($page - 1) * $max;
+
+        $this->db->select('ideas.*');
+        $this->db->from('ideas');
+        $this->db->join('idea_tags', 'idea_tags.idea_id = ideas.id');
+        $this->db->where('idea_tags.tag_id', $tag_id);
+        $this->db->where('ideas.status !=', 'new');
+
+        // order (ASC , DESC)
+        $sort_direction = (strtolower($type) == "desc") ? 'DESC' : 'ASC';
+
+        // select order field
+        switch ($order) {
+            case 'id':
+                $this->db->order_by('ideas.id', $sort_direction);
+                break;
+            case 'title':
+                $this->db->order_by('ideas.title', $sort_direction);
+                break;
+            default:
+                $this->db->order_by('ideas.votes', $sort_direction);
+                break;
+        }
+
+        // handel Pagination
+        if ($page > 0) {
+            $this->db->limit($max, $from);
+        }
+
+        $ideas = $this->db->get()->result();
 
         return $this->decorateIdeas($ideas);
     }

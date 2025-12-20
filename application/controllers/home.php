@@ -39,6 +39,7 @@ class Home extends CI_Controller {
         );
 
 		$this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/index', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
@@ -51,7 +52,7 @@ class Home extends CI_Controller {
             return;
         }
 
-        $data = $this->getDefaultData($id);
+        $data = $this->getDefaultData();
         $data['ideas'] = $this->get->getIdeasByCategory($id, $order, $type, $page);
         $data['category'] = $data['categories'][$id];
         $total = $this->get->getQuantityOfApprovedIdeas($id);
@@ -63,7 +64,32 @@ class Home extends CI_Controller {
         $data['order'] = $order;
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/category_ideas', $data);
+		$this->load->view('_templates/menu', $data);
+		$this->load->view('_templates/footer', $data);
+    }
+
+    public function tag($id, $name = "", $order = "votes", $type = "desc", $page = '1') {
+        if (!$this->get->tagExists($id)){
+            header('Location: ' . base_url() . 'home');
+            return;
+        }
+
+        $data = $this->getDefaultData();
+        $data['ideas'] = $this->get->getIdeasByTag($id, $order, $type, $page);
+        $data['tag'] = $data['all_tags'][$id];
+        $total = $this->get->getQuantityOfApprovedIdeas($id);
+        $data['max_results'] = (int) $this->get->getSetting('max_results');
+        $data['page'] = (int) $page;
+        $data['pages'] = (int) ($total / $data['max_results']);
+        if(($total % $data['max_results']) > 0) $data['pages']++;
+        $data['type'] = $type;
+        $data['order'] = $order;
+
+        $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
+		$this->load->view('home/tag_ideas', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
     }
@@ -75,6 +101,7 @@ class Home extends CI_Controller {
         $data['ideas'] = $this->get->getIdeasBySearchQuery($query);
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/search_results', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
@@ -98,12 +125,14 @@ class Home extends CI_Controller {
             $comment->user = $userName;
         }
 
-        $data = $this->getDefaultData($id);
+        $data = $this->getDefaultData();
         $data['comments'] = $comments;
         $data['idea'] = $idea;
         $data['attachments'] = $attachments;
+        $data['idea_tags'] = $this->get->getTags($id);
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/view_idea', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
@@ -131,6 +160,7 @@ class Home extends CI_Controller {
         }
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/user', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
@@ -159,6 +189,7 @@ class Home extends CI_Controller {
         $data['ban'] = $ban;
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/login', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
@@ -175,6 +206,7 @@ class Home extends CI_Controller {
 				);
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
         $this->load->view('home/post_idea', $data);
         $this->load->view('_templates/menu', $data);
         $this->load->view('_templates/footer', $data);
@@ -186,16 +218,17 @@ class Home extends CI_Controller {
         $data['error'] = $error;
 
         $this->load->view('_templates/header', $data);
+		$this->load->view('_templates/tags', $data);
 		$this->load->view('home/register', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
     }
 
-    private function getDefaultData($ideaid = 0) {
+    private function getDefaultData() {
         return array(
             'title' => $this->get->getSetting('title'),
             'categories' => $this->get->getCategories(),
-            'tags' => $this->get->getTags($ideaid),
+            'all_tags' => $this->get->getTags(),
             'lang' => $this->lang->language,
         );
     }

@@ -2,19 +2,19 @@
 	
 		<div class="breadcrumb-wrapper"><ol class="breadcrumb">
 			<li><a href="<?php echo base_url();?>">Feedback</a></li>
-			<li class="active"><?php echo $category->name; ?></li>
+			<li><a>Tags</a></li>
+			<li class="active"><?php echo $tag->name; ?></li>
 		</ol></div>
 		<div>
-			<h5 style="color:#2C3E50;"><?php echo $category->name; ?></h5>
-			<span style="color:#34495E"><small><?php echo $category->description; ?></small></span>
+			<h5 style="color:#2C3E50;">Tag: <?php echo $tag->name; ?></h5>
 		</div>
 		<table id="ideastable" class="table table-condensed">
 		<thead>
 			<tr>
-			  <th><small><?php echo $lang['label_idea']; ?> <a id="order-by--idea" href="<?= $category->url .'/title/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
-			  <th><small><?php echo $lang['label_votes']; ?> <a id="order-by--votes" href="<?= $category->url .'/votes/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
+			  <th><small><?php echo $lang['label_idea']; ?> <a id="order-by--idea" href="<?= $tag->url .'/title/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
+			  <th><small><?php echo $lang['label_votes']; ?> <a id="order-by--votes" href="<?= $tag->url .'/votes/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
 			  <th><small><?php echo $lang['label_comments']; ?></small></th>
-			  <th><small><?php echo $lang['label_date']; ?> <a id="order-by--date" href="<?= $category->url .'/id/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
+			  <th><small><?php echo $lang['label_date']; ?> <a id="order-by--date" href="<?= $tag->url .'/id/'; echo ($type == 'desc') ? 'asc' : 'desc';?>"><span class="glyphicon glyphicon-chevron-<?php echo ($type == 'desc') ? 'down' : 'up'; ?>" style="margin-left:4px"></span></a></small></th>
 			</tr>
 		</thead>
 		</table>
@@ -98,11 +98,6 @@
 						<ul class="nav-pills" style="list-style:none;margin-left:-40px">
 							<li><small class="result-idea--comments"><?php echo $idea->comments; ?> <?php echo $lang['label_comments']; ?></small></li>
 						</ul>
-						<?php foreach ($tags as $tag): ?>
-							<ul class="nav-pills" style="list-style:none;margin-left:-40px">
-									<li><small class="result-idea--comments"><?php echo $tag->name; ?></small></li>
-								</ul>
-						<?php endforeach; ?>
 				<br><br>
 					</div>
 				</div>
