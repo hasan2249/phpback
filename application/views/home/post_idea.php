@@ -35,6 +35,14 @@
 		</select>
 	  </div>
 	  <div class="form-group">
+	  <label><?php echo $lang['label_tags']; ?></label>
+	    <select class="form-control" name="tags[]" multiple="multiple" required>
+			<?php foreach ($tags as $tag):?>
+				<option value="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></option>
+			<?php endforeach; ?>
+		</select>
+	  </div>
+	  <div class="form-group">
 	  <label><?php echo $lang['label_description'];?></label>
 	    <textarea class="form-control" rows="4" name="description" minlength="20" maxlength="1500" required><?php if(@isset($POST['desc'])) echo $POST['desc'];?></textarea>
 	  </div>

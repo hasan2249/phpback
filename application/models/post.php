@@ -58,7 +58,7 @@ class Post extends CI_Model
         return true;
     }
 
-    public function add_idea($title, $content, $author_id, $category_id){
+    public function add_idea($title, $content, $author_id, $category_id, $tagsid){
         $author_id = (int) $author_id;
         $category_id = (int) $category_id;
         if($author_id < 1 || $category_id < 1) return false;
@@ -73,6 +73,16 @@ class Post extends CI_Model
 	   			'categoryid' => $category_id,
 			);
         $this->db->insert('ideas', $data);
+        $idea_id = $this->db->insert_id();
+        if (!empty($tagsid) && is_array($tagsid)) {
+            foreach($tagsid as $tagid){
+                $tag_relation = array(
+                    'tag_id' => $tagid,
+                    'idea_id' => $idea_id,
+                );
+                $this->db->insert('idea_tags', $tag_relation);
+            }
+        }
       	$this->log($this->lang->language['log_new_idea'] . ": $title", "user", $author_id);
         return true;
     }
@@ -162,6 +172,23 @@ class Post extends CI_Model
 
         $query = "UPDATE $table SET $field=$value WHERE id='$id'";
         $this->db->query($query);
+    }
+
+    public function update_tag_by_id($field, $value, $id) {
+        $id = (int) $id;
+        if (!$this->isAlphaNumeric($field)) return false;
+
+        if ($field === 'name') {
+            $this->db->where('name', $value);
+            $this->db->where('id !=', $id); 
+            $count = $this->db->count_all_results('tags');
+            
+            if ($count > 0) return false;
+        }
+
+        $this->db->set($field, $value);
+        $this->db->where('id', $id);
+        return $this->db->update('tags');
     }
 
     public function delete_row_by_id($table, $id){
@@ -294,6 +321,18 @@ class Post extends CI_Model
     public function delete_category($id){
         $id = (int) $id;
         $this->db->query("DELETE FROM categories WHERE id='$id'");
+    }
+    
+    public function add_tag($name){
+        $data = array(
+            'name' => $name,
+        );
+        $this->db->insert('tags', $data);
+    }
+
+    public function delete_tag($id){
+        $id = (int) $id;
+        $this->db->query("DELETE FROM tags WHERE id='$id'");
     }
 
     private function get_row_by_id($table, $id){

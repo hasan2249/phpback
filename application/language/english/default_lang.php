@@ -3,6 +3,7 @@
     $lang['label_ban_user'] = 'Ban user';
     $lang['label_categories'] = 'Categories';
     $lang['label_category'] = 'Category';
+    $lang['label_tags'] = 'Tags';
     $lang['label_change_password'] = 'Change Password';
     $lang['label_change_status'] = 'Change status';
     $lang['label_commented'] = 'Commented in';
@@ -36,6 +37,7 @@
     $lang['text_create_an_account'] = 'Or Create an account';
     $lang['text_registration_success'] = 'Registration successful';
     $lang['text_select_category'] = 'Select category...';
+    $lang['text_select_tag'] = 'Select tag...';
     $lang['text_nothing_found'] = 'Nothing was found...';
     $lang['text_votes_left'] = 'votes left.';
     $lang['text_sure_delete_idea'] = 'Are you sure you want to delete this idea?';

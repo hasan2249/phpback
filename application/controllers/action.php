@@ -177,6 +177,8 @@ class Action extends CI_Controller{
         $title = $this->input->post('title', true);
         $desc = $this->input->post('description', true);
         $catid = $this->input->post('category', true);
+        $tagsid = $this->input->post('tags');
+
         if($catid == 0){
             $this->redirectpost(base_url() . "home/postidea/errorcat", array('title' => $title, 'desc' => $desc, 'catid' => $catid));
             return;
@@ -190,7 +192,7 @@ class Action extends CI_Controller{
             return;
         }
         if(@isset($_SESSION['phpback_userid'])) {
-            $this->post->add_idea($title, $desc, $_SESSION['phpback_userid'], $catid);
+            $this->post->add_idea($title, $desc, $_SESSION['phpback_userid'], $catid, $tagsid);
             $admins = $this->get->get_admin_users();
             $adminMails = array_map(function (\stdClass $admin) {
                 return $admin->email;

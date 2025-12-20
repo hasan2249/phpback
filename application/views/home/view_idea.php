@@ -123,6 +123,17 @@
 			</div>
 			<?php endif; ?>
 			
+			<div class="row">
+				<div class="col-md-1 col-md-offset-2">
+					<label>Tags:</label>
+				</div>
+				<?php foreach ($tags as $tag) : ?>
+					<div class="col-md-1 col-md-offset-2">
+							<a href="<?php echo base_url() . 'tags/' . $tag->id; ?>"><?php echo $tag->name; ?></a>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
 			<?php if(isset($_SESSION['phpback_userid'])): ?>
 			<div class="row">
 				<div class="col-md-10 col-md-offset-2" style="margin-top:10px">

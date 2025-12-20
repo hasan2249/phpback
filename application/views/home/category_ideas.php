@@ -97,9 +97,16 @@
 					<div style="margin-top:-10px">
 						<ul class="nav-pills" style="list-style:none;margin-left:-40px">
 							<li><small class="result-idea--comments"><?php echo $idea->comments; ?> <?php echo $lang['label_comments']; ?></small></li>
-						</ul><br><br>
+						</ul>
+						<?php foreach ($tags as $tag): ?>
+							<ul class="nav-pills" style="list-style:none;margin-left:-40px">
+									<li><small class="result-idea--comments"><?php echo $tag->name; ?></small></li>
+								</ul>
+						<?php endforeach; ?>
+				<br><br>
 					</div>
 				</div>
+
 			</div>
 		<?php endforeach; ?>
 			<ul class="pagination">

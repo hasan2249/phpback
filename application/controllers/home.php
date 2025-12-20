@@ -51,7 +51,7 @@ class Home extends CI_Controller {
             return;
         }
 
-        $data = $this->getDefaultData();
+        $data = $this->getDefaultData($id);
         $data['ideas'] = $this->get->getIdeasByCategory($id, $order, $type, $page);
         $data['category'] = $data['categories'][$id];
         $total = $this->get->getQuantityOfApprovedIdeas($id);
@@ -97,7 +97,7 @@ class Home extends CI_Controller {
             $comment->user = $userName;
         }
 
-        $data = $this->getDefaultData();
+        $data = $this->getDefaultData($id);
         $data['comments'] = $comments;
         $data['idea'] = $idea;
 
@@ -168,6 +168,7 @@ class Home extends CI_Controller {
         $data['POST'] = array(
 					'title' => $this->input->post('title'),
 					'catid' => $this->input->post('catid'),
+					'tagsid' => $this->input->post('tagsid'),
 					'desc' => $this->input->post('desc')
 				);
 
@@ -188,10 +189,11 @@ class Home extends CI_Controller {
 		$this->load->view('_templates/footer', $data);
     }
 
-    private function getDefaultData() {
+    private function getDefaultData($ideaid = 0) {
         return array(
             'title' => $this->get->getSetting('title'),
             'categories' => $this->get->getCategories(),
+            'tags' => $this->get->getTags($ideaid),
             'lang' => $this->lang->language,
         );
     }

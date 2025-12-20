@@ -28,6 +28,32 @@ class Get extends CI_Model
     	return $categoryList;
     }
 
+    public function getTags($idea_id = 0) {
+        $idea_id = (int) $idea_id;
+
+        if ($idea_id == 0) {
+            $result = $this->db->order_by('name', 'ASC')->get('tags')->result();
+        } else {
+            $this->db->select('tags.*');
+            $this->db->from('tags');
+            $this->db->join('idea_tags', 'idea_tags.tag_id = tags.id');
+            $this->db->where('idea_tags.idea_id', $idea_id);
+            $this->db->order_by('tags.name', 'ASC');
+            $result = $this->db->get()->result();
+        }
+
+        $tagList = array();
+        foreach ($result as $tag) {
+            $tagList[$tag->id] = $tag;
+        }
+
+        if (!empty($tagList)) {
+            $this->decorateTags($tagList);
+        }
+
+        return $tagList;
+    }
+    
     /**
      * @return \stdClass
      */
@@ -101,6 +127,13 @@ class Get extends CI_Model
     public function categoryExists($id) {
         $id = (int) $id;
         $result = $this->db->query("SELECT id FROM categories WHERE id='$id'");
+        if($result->num_rows() == 0) return false;
+        return true;
+    }
+
+    public function tagExists($id) {
+        $id = (int) $id;
+        $result = $this->db->query("SELECT id FROM tags WHERE id='$id'");
         if($result->num_rows() == 0) return false;
         return true;
     }
@@ -357,6 +390,16 @@ class Get extends CI_Model
         }
     }
 
+    public function tag_id($name) {
+        $name = $this->db->escape($name);
+        $sql = $this->db->query("SELECT id FROM tags where name=$name");
+        if($sql->num_rows() == 0) return 0;
+        else{
+            $cat = $sql->row();
+            return $cat->id;
+        }
+    }
+
     public function email_config() {
         $config['protocol']     = 'smtp';
         $config['smtp_host']    = $this->getSetting('smtp-host');
@@ -406,6 +449,13 @@ class Get extends CI_Model
         foreach ($categories as &$category) {
             $category->url = base_url() . 'home/category/' . $category->id . '/';
             $category->url .= $this->display->getParsedString($category->name);
+        }
+    }
+
+    private function decorateTags(&$tags) {
+        foreach ($tags as &$tag) {
+            $tag->url = base_url() . 'home/tag/' . $tag->id . '/';
+            $tag->url .= $this->display->getParsedString($tag->name);
         }
     }
 

@@ -164,6 +164,49 @@ class Adminaction extends CI_Controller{
         header('Location: ' . base_url() . 'admin/system');
     }
 
+    public function addtag(){
+        $this->start(3);
+        $name = $this->input->post('name', true);
+        $result = $this->get->tag_id($name);
+        if ($result){
+            $this->post->update_tag_by_id('name', $name, $result);
+            $this->post->log("'$name'" . $this->lang->language['log_tag_name'], 'user', $_SESSION['phpback_userid']);
+        }
+        else{
+            $this->post->add_tag($name);
+            $this->post->log("'$name'" . $this->lang->language['log_tag_created'], 'user', $_SESSION['phpback_userid']);
+        }
+
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
+    public function updatetags(){
+        $this->start(3);
+        $tags = $this->get->getTags();
+        foreach ($tags as $tag) {
+            $temp = $this->input->post("tag-$tag->id", true);
+            if($temp != $tag->name){
+                $this->post->update_tag_by_id('name', $temp , $tag->id);
+                $this->post->log(str_replace(array('%s1', '%s2'), array($tag->name, $temp), $this->lang->language['log_tag_changed']), 'user', $_SESSION['phpback_userid']);
+            }
+        }
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
+    public function deletetag(){
+        $this->start(3);
+        $id = $this->input->post('tagid', true);
+        if($this->input->post('ideas', true)){
+            $ideas = $this->get->getIdeasByTag($id , 'id', 'desc', 0);
+            foreach ($ideas as $idea){
+                $this->post->deleteidea($idea->id);
+            }
+        }
+        $this->post->delete_tag($id);
+        $this->post->log(str_replace('%s', "#$id", $this->lang->language['log_tag_deleted']), 'user', $_SESSION['phpback_userid']);
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
   public function upgrade() {
         $this->start(3);
 
