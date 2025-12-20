@@ -84,7 +84,11 @@ class Post extends CI_Model
             }
         }
       	$this->log($this->lang->language['log_new_idea'] . ": $title", "user", $author_id);
-        return true;
+        return $idea_id;
+    }
+
+    public function save_attachments_batch($data) {
+        return $this->db->insert_batch('attachments', $data);
     }
 
     public function add_comment($idea_id, $comment, $user_id){

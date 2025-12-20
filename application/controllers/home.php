@@ -82,6 +82,7 @@ class Home extends CI_Controller {
 
     public function idea($id) {
         $idea = $this->get->getIdea($id);
+        $attachments = $this->get->getAttachments($id);
 
         if ($idea === false) {
             header('Location: ' . base_url() . 'home');
@@ -100,6 +101,7 @@ class Home extends CI_Controller {
         $data = $this->getDefaultData($id);
         $data['comments'] = $comments;
         $data['idea'] = $idea;
+        $data['attachments'] = $attachments;
 
         $this->load->view('_templates/header', $data);
 		$this->load->view('home/view_idea', $data);

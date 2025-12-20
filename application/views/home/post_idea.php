@@ -20,7 +20,7 @@
 			break;
 	}?></p>
 	<?php endif; ?>
-	<form name="post-idea-form" method="post" action="<?php echo base_url() . 'action/newidea'?>">
+	<form name="post-idea-form" method="post" enctype="multipart/form-data" action="<?php echo base_url() . 'action/newidea'?>">
 	  <div class="form-group">
 	    <label for="exampleInputEmail1"><?php echo $lang['label_idea_title']; ?></label>
 	    <input type="text" class="form-control" name="title" value="<?php if(@isset($POST['title'])) echo $POST['title'];?>" minlength="9" maxlength="100" required>
@@ -42,6 +42,11 @@
 			<?php endforeach; ?>
 		</select>
 	  </div>
+	  <div class="form-group">
+        <label>إرفاق صور أو مستندات (JPG, PNG, PDF, DOCX):</label>
+        <input type="file" name="userfiles[]" class="form-control" multiple>
+        <small class="text-muted">الأنواع المسموح بها: gif, jpg, png, pdf, doc, docx</small>
+      </div>
 	  <div class="form-group">
 	  <label><?php echo $lang['label_description'];?></label>
 	    <textarea class="form-control" rows="4" name="description" minlength="20" maxlength="1500" required><?php if(@isset($POST['desc'])) echo $POST['desc'];?></textarea>

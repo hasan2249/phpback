@@ -90,6 +90,30 @@
 				</div>
 			</div>
 			
+			<div class="row">
+				<div class="col-md-10 col-md-offset-2">
+					<?php foreach ($attachments as $attachment) : ?>
+						<div style="display: inline-block; margin-bottom: 10px; margin-right: 10px; vertical-align: top; text-align: center;">
+							
+							<?php 
+							// التحقق إذا كان المرفق صورة لعرض معاينة، أو مستند لعرض أيقونة
+							$is_image = in_array(strtolower($attachment->file_type), ['.jpg', '.jpeg', '.png', '.gif']);
+							if ($is_image) : 
+							?>
+								<a href="<?php echo $attachment->url; ?>" target="_blank">
+									<img src="<?php echo $attachment->url; ?>" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+								</a>
+							<?php else : ?>
+								<a href="<?php echo $attachment->url; ?>" target="_blank" class="btn btn-default" style="display: block; width: 80px; height: 80px; padding-top: 20px;">
+									<i class="fa fa-file-text-o fa-2x"></i><br>
+									<small><?php echo $attachment->file_type; ?></small>
+								</a>
+							<?php endif; ?>
+							
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
 			<?php if(isset($_SESSION['phpback_isadmin']) && $_SESSION['phpback_isadmin']): ?>
 			<div class="row">
 				<div class="col-md-10 col-md-offset-2">
@@ -148,7 +172,7 @@
 				</div>
 			</div>
 			<?php endif; ?>
-			
+
 			<?php foreach ($comments as $comment) : ?>
 			<div class="row">
 				<div class="col-md-10 col-md-offset-2">

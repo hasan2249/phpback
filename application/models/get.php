@@ -74,6 +74,23 @@ class Get extends CI_Model
         return $this->decorateIdea($idea);
     }
 
+    public function getAttachments($idea_id) {
+        $idea_id = (int) $idea_id;
+
+        $this->db->select('*');
+        $this->db->from('attachments');
+        $this->db->where('idea_id', $idea_id); 
+        $result = $this->db->get()->result();
+
+        return $this->decorateAttachments($result);
+    }
+
+    private function decorateAttachments($attachments) {
+        foreach ($attachments as &$file) {
+            $file->url = base_url('uploads/ideas/' . $file->file_name);
+        }
+        return $attachments;
+    }
 
     public function getCommentsByIdea($idea_id){
     	$idea_id = (int) $idea_id;

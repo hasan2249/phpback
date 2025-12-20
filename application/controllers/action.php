@@ -192,7 +192,39 @@ class Action extends CI_Controller{
             return;
         }
         if(@isset($_SESSION['phpback_userid'])) {
-            $this->post->add_idea($title, $desc, $_SESSION['phpback_userid'], $catid, $tagsid);
+            $idea_id = $this->post->add_idea($title, $desc, $_SESSION['phpback_userid'], $catid, $tagsid);
+            
+            $uploadData = array();
+            if (!empty($_FILES['userfiles']['name'][0])) {
+                $filesCount = count($_FILES['userfiles']['name']);
+                
+                $config['upload_path']   = './uploads/ideas/';
+                $config['allowed_types'] = 'gif|jpg|png|pdf|doc|docx';
+                $config['encrypt_name']  = TRUE;
+                $this->load->library('upload', $config);
+
+                for ($i = 0; $i < $filesCount; $i++) {
+                    $_FILES['file']['name']     = $_FILES['userfiles']['name'][$i];
+                    $_FILES['file']['type']     = $_FILES['userfiles']['type'][$i];
+                    $_FILES['file']['tmp_name'] = $_FILES['userfiles']['tmp_name'][$i];
+                    $_FILES['file']['error']    = $_FILES['userfiles']['error'][$i];
+                    $_FILES['file']['size']     = $_FILES['userfiles']['size'][$i];
+
+                    if ($this->upload->do_upload('file')) {
+                        $fileData = $this->upload->data();
+                        $uploadData[] = array(
+                            'idea_id'   => $idea_id,
+                            'file_name' => $fileData['file_name'],
+                            'file_type' => $fileData['file_ext']
+                        );
+                    }
+                }
+            
+                if (!empty($uploadData)) {
+                    $this->post->save_attachments_batch($uploadData);
+                }
+            }
+
             $admins = $this->get->get_admin_users();
             $adminMails = array_map(function (\stdClass $admin) {
                 return $admin->email;
