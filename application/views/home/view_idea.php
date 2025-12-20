@@ -146,13 +146,13 @@
 			</div>
 			<?php endif; ?>
 			
-			<div class="row">
+			<div class="row mt-2">
 				<div class="col-md-1 col-md-offset-2">
 					<label>Tags:</label>
 				</div>
 				<?php foreach ($idea_tags as $tag) : ?>
-					<div class="col-md-1 col-md-offset-2">
-							<a href="<?php echo $tag->url; ?>"><?php echo $tag->name; ?></a>
+					<div class="col-md-1">
+						<a href="<?php echo $tag->url; ?>"><span class="label label-warning"><?php echo $tag->name; ?></span></a>
 					</div>
 				<?php endforeach; ?>
 			</div>

@@ -34,8 +34,7 @@ class Get extends CI_Model
         $this->db->select('tags.*, COUNT(idea_tags_count.idea_id) as total_ideas');
         $this->db->from('tags');
         $this->db->join('idea_tags as idea_tags_count', 'idea_tags_count.tag_id = tags.id', 'left');
-        $this->db->join('ideas', 'ideas.id = idea_tags_count.id', 'left');
-        $this->db->where('ideas.status !=', 'new');
+        $this->db->join('ideas', 'ideas.id = idea_tags_count.idea_id AND ideas.status != "new"', 'left');
 
         if ($idea_id != 0) {
             // get tags of specefic idea

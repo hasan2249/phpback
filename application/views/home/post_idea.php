@@ -37,7 +37,7 @@
 	  <div class="form-group">
 	  <label><?php echo $lang['label_tags']; ?></label>
 	    <select class="form-control" name="tags[]" multiple="multiple" required>
-			<?php foreach ($tags as $tag):?>
+			<?php foreach ($all_tags as $tag):?>
 				<option value="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></option>
 			<?php endforeach; ?>
 		</select>
