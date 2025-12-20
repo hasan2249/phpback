@@ -1,96 +1,28 @@
-	<div class="col-md-7">
-	
-		<small>
-		<ol class="breadcrumb">
-		  <li class="active">Feedback</li>
-		</ol>
-		</small>
-		<div>
-			<h4 id="welcome-mesagge--title"><?= $welcomeTitle; ?></h4>
-			<div id="welcome-mesagge--text"><?= $welcomeDescription; ?></div>
-		</div>
-		
-		<br/>
-		
-		<div class="col-md-6">
-			<div class="ideas-completed">
-				<h6><?= $lang['last_completed_ideas']; ?></h6>
-				<small>
-				<table class="table table-hover">
-					<?php foreach ($ideas['completed'] as $idea): ?>
-						<tr>
-							<td>
-								<span class="label label-info completed-idea--tag" style="margin-right:5px">
-									<?= $lang['idea_completed']; ?>
-								</span>
-								<a href="<?= $idea->url; ?>">
-									<?= $idea->title; ?>
-								</a>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				</table>
-				</small>
-			</div>
-			<div class="ideas-planned">
-				<h6><?= $lang['last_planned_ideas']; ?></h6>
-				<small>
-				<table class="table table-hover">
-					<?php foreach ($ideas['planned'] as $idea): ?>
-						<tr>
-							<td>
-								<span class="label label-warning planned-idea--tag" style="margin-right:5px">
-									<?= $lang['idea_planned']; ?>
-								</span>
-								<a href="<?= $idea->url; ?>">
-									<?= $idea->title; ?>
-								</a>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				</table>
-				</small>
-			</div>
-		</div>
-		
-		<div class="col-md-6">
-			<div class="ideas-started">
-				<h6><?= $lang['last_started_ideas']; ?></h6>
-				<small>
-					<table class="table table-hover">
-						<?php foreach ($ideas['started'] as $idea): ?>
-							<tr>
-								<td>
-									<span class="label label-success started-idea--tag" style="margin-right:5px">
-										<?= $lang['idea_started']; ?>
-									</span>
-									<a href="<?= $idea->url; ?>">
-										<?= $idea->title; ?>
-									</a>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					</table>
-				</small>
-			</div>
-			<div class="ideas-considered">
-				<h6><?= $lang['last_considered_ideas']; ?></h6>
-				<small>
-				<table class="table table-hover">
-					<?php foreach ($ideas['considered'] as $idea): ?>
-						<tr>
-							<td>
-								<span class="label label-default considered-idea--tag" style="margin-right:5px">
-									<?= $lang['idea_considered']; ?>
-								</span>
-								<a href="<?= $idea->url; ?>">
-									<?= $idea->title; ?>
-								</a>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				</table>
-				</small>
-			</div>
-		</div>
-	</div>
+
+
+<div class="col-md-12">
+    <h3 class="page-header"><i class="fa fa-th-large"></i> مساحات العمل (Boards)</h3>
+    
+    <div class="row">
+        <?php foreach ($boards as $board): ?>
+            <div class="col-sm-6">
+                <a href="<?= $board->url; ?>" class="board-card-link">
+                    <div class="board-card">
+                        <div class="board-card-body">
+                            <h4 class="board-title"><?php echo $board->name; ?></h4>
+                            <p class="board-desc text-muted">
+                                <?php echo (strlen($board->description) > 60) ? substr($board->description, 0, 60) . '...' : $board->description; ?>
+                            </p>
+                        </div>
+                        <div class="board-card-footer">
+                            <span class="label label-default">
+                                <i class="fa fa-lightbulb-o"></i>جديد
+                            </span>
+                            <i class="fa fa-arrow-left pull-left view-icon"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

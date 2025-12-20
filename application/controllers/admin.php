@@ -142,6 +142,7 @@ class Admin extends CI_Controller {
         $data['adminusers'] = $this->get->get_admin_users();
         $data['categories'] = $this->get->getCategories();
         $data['tags'] = $this->get->getTags();
+        $data['boards'] = $this->get->getBoards();
         $data['version'] = $this->version;
 
         if ($this->get->getAutoUpdaterEnabled()) {

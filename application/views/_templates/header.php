@@ -53,7 +53,7 @@ See LICENSE.TXT for details.  -->
 <body>
   <div class="row header">
     <div class="pull-left header--title-container">
-      <h4 id="header--title"><?= $title; ?></h4>
+      <a href="<?php echo base_url() ?>"><h4 id="header--title"><?= $title; ?></h4></a>
     </div>
     <?php if(@isset($_SESSION['phpback_userid'])): ?>
     <div class="pull-right" style="padding-top:15px;padding-right:40px;">

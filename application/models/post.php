@@ -61,6 +61,8 @@ class Post extends CI_Model
     public function add_idea($title, $content, $author_id, $category_id, $tagsid){
         $author_id = (int) $author_id;
         $category_id = (int) $category_id;
+        $board_id = (int) $this->session->userdata('current_board_id');
+        if(!$board_id) return false;
         if($author_id < 1 || $category_id < 1) return false;
         $data = array(
 	   			'title' => $title,
@@ -71,6 +73,7 @@ class Post extends CI_Model
 	   			'comments' => '0',
 	   			'status' => 'new',
 	   			'categoryid' => $category_id,
+	   			'board_id' => $board_id,
 			);
         $this->db->insert('ideas', $data);
         $idea_id = $this->db->insert_id();
@@ -193,6 +196,23 @@ class Post extends CI_Model
         $this->db->set($field, $value);
         $this->db->where('id', $id);
         return $this->db->update('tags');
+    }
+
+    public function update_board_by_id($field, $value, $id) {
+        $id = (int) $id;
+        if (!$this->isAlphaNumeric($field)) return false;
+
+        if ($field === 'name') {
+            $this->db->where('name', $value);
+            $this->db->where('id !=', $id); 
+            $count = $this->db->count_all_results('boards');
+            
+            if ($count > 0) return false;
+        }
+
+        $this->db->set($field, $value);
+        $this->db->where('id', $id);
+        return $this->db->update('boards');
     }
 
     public function delete_row_by_id($table, $id){
@@ -332,6 +352,18 @@ class Post extends CI_Model
             'name' => $name,
         );
         $this->db->insert('tags', $data);
+    }
+    
+    public function add_board($name){
+        $data = array(
+            'name' => $name,
+        );
+        $this->db->insert('boards', $data);
+    }
+
+    public function delete_board($id){
+        $id = (int) $id;
+        $this->db->query("DELETE FROM boards WHERE id='$id'");
     }
 
     public function delete_tag($id){

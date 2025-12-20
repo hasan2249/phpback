@@ -23,6 +23,7 @@
         <li id="table2"><a onclick="showtable3('admintable','table2');">Create Admin</a></li>
         <li id="table3"><a onclick="showtable3('categorytable','table3');">Categories</a></li>
         <li id="table5"><a onclick="showtable3('tagtable','table5');">Tags</a></li>
+        <li id="table6"><a onclick="showtable3('boardtable','table6');">Boards</a></li>
         <li id="table4"><a onclick="showtable3('upgradetable','table4');">Upgrade Version</a></li>
       </ul>
       <div id="generaltable">
@@ -181,6 +182,48 @@
             <?php foreach ($tags as $tag): ?>
               <div class="form-group">
                 <input type="text" class="form-control" name="tag-<?php echo $tag->id;?>" style="width:300px" value="<?php echo $tag->name;?>">
+              </div>
+            <?php endforeach; ?>
+            <div class="form-group">
+              <button name="update-names" type="submit" class="btn btn-primary">Update names</button>
+            </div>
+        </form>
+      </div>
+      <div id="boardtable" style="display:none">
+        <h4>Add a new Board</h4>
+        <form role="form" method="post" action="<?php echo base_url() . 'adminaction/addboard'?>">
+            <div class="form-group">
+              <label>Board name</label>
+              <input type="text" class="form-control" name="name" style="width:300px">
+              <small>(put an existing board name to change its description)</small>
+            </div>
+            <div class="form-group">
+              <button name="add-board" type="submit" class="btn btn-primary">Add Board</button>
+            </div>
+        </form>
+        <h4>Delete a board</h4>
+        <form role="form" method="post" action="<?php echo base_url() . 'adminaction/deleteboard'?>">
+          <div class="form-group">
+              <label>Select board to delete</label>
+              <select class="form-control" name="boardid" style="width:300px">
+                <?php foreach ($boards as $board): ?>
+                  <option value="<?php echo $board->id; ?>"><?php echo $board->name; ?></option>
+                <?php endforeach; ?>
+              </select>
+              <label name="delete-ideas" class="checkbox" for="checkbox1">
+                <input type="checkbox" value="" id="checkbox1" name="ideas" data-toggle="checkbox">
+                Delete board's ideas
+              </label>
+          </div>
+          <div class="form-group">
+              <button name="delete-board" type="submit" class="btn btn-primary">Delete board</button>
+          </div>
+        </form>
+        <h4>Change names</h4>
+        <form role="form" name="update-form" method="post" action="<?php echo base_url() . 'adminaction/updateboards'?>">
+            <?php foreach ($boards as $board): ?>
+              <div class="form-group">
+                <input type="text" class="form-control" name="board-<?php echo $board->id;?>" style="width:300px" value="<?php echo $board->name;?>">
               </div>
             <?php endforeach; ?>
             <div class="form-group">

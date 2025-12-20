@@ -207,7 +207,50 @@ class Adminaction extends CI_Controller{
         header('Location: ' . base_url() . 'admin/system');
     }
 
-  public function upgrade() {
+    public function addboard(){
+        $this->start(3);
+        $name = $this->input->post('name', true);
+        $result = $this->get->board_id($name);
+        if ($result){
+            $this->post->update_board_by_id('name', $name, $result);
+            $this->post->log("'$name'" . $this->lang->language['log_board_name'], 'user', $_SESSION['phpback_userid']);
+        }
+        else{
+            $this->post->add_board($name);
+            $this->post->log("'$name'" . $this->lang->language['log_board_created'], 'user', $_SESSION['phpback_userid']);
+        }
+
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
+    public function updateboards(){
+        $this->start(3);
+        $boards = $this->get->getBoards();
+        foreach ($boards as $board) {
+            $temp = $this->input->post("board-$board->id", true);
+            if($temp != $board->name){
+                $this->post->update_board_by_id('name', $temp , $board->id);
+                $this->post->log(str_replace(array('%s1', '%s2'), array($board->name, $temp), $this->lang->language['log_board_changed']), 'user', $_SESSION['phpback_userid']);
+            }
+        }
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
+    public function deleteboard(){
+        $this->start(3);
+        $id = $this->input->post('boardid', true);
+        if($this->input->post('ideas', true)){
+            $ideas = $this->get->getIdeasByBoard($id , 'id', 'desc', 0);
+            foreach ($ideas as $idea){
+                $this->post->deleteidea($idea->id);
+            }
+        }
+        $this->post->delete_board($id);
+        $this->post->log(str_replace('%s', "#$id", $this->lang->language['log_tag_deleted']), 'user', $_SESSION['phpback_userid']);
+        header('Location: ' . base_url() . 'admin/system');
+    }
+
+    public function upgrade() {
         $this->start(3);
 
         $update = new AutoUpdate(__DIR__ . '/temp', __DIR__ . '/../../', 60);

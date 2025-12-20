@@ -20,5 +20,9 @@
     $lang['log_tag_name'] = 'name was updated';
     $lang['log_tag_changed'] = 'Tag \'%s1\' changed to \'%s2\'';
     $lang['log_tag_deleted'] = 'Tag %s deleted';
+    $lang['log_board_created'] = 'Board has been created';
+    $lang['log_board_name'] = 'name was updated';
+    $lang['log_board_changed'] = 'Board \'%s1\' changed to \'%s2\'';
+    $lang['log_board_deleted'] = 'Board %s deleted';
     $lang['log_new_idea_mail_content'] = 'A new idea has been posted in your feedback system %s. To find it, click the following link : %s.';
     $lang['log_new_comment_mail_content'] = 'A new comment has been posted in your feedback system %s. To find it, click the following link : %s.';

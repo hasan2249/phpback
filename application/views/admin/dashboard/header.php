@@ -60,12 +60,16 @@ See LICENSE.TXT for details.  -->
       document.getElementById('admintable').style.display = 'none';
       document.getElementById('categorytable').style.display = 'none';
       document.getElementById('upgradetable').style.display = 'none';
+      document.getElementById('tagtable').style.display = 'none';
+      document.getElementById('boardtable').style.display = 'none';
       document.getElementById(tableid).style.display = '';
 
       document.getElementById("table1").className = "";
       document.getElementById("table2").className = "";
       document.getElementById("table3").className = "";
       document.getElementById("table4").className = "";
+      document.getElementById("table5").className = "";
+      document.getElementById("table6").className = "";
       document.getElementById(tablelink).className = "active";
     }
     function popup_sure(text, url) {

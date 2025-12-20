@@ -17,24 +17,51 @@ class Get extends CI_Model
 		$this->load->database();
 	}
 
-	public function getCategories() {
-    	$result = $this->db->query('SELECT * FROM categories ORDER BY name')->result();
+	public function getCategories($board_id = 0) {
+        if ($board_id == 0) {
+            $board_id = (int) $this->session->userdata('current_board_id');
+        }
+
+        if ($board_id == 0) {
+            // return empty array when no board
+            return array();
+        }
+
+        $this->db->select('*');
+        $this->db->from('categories');
+        $this->db->where('board_id', $board_id);
+        $this->db->order_by('name', 'ASC');
+        
+        $result = $this->db->get()->result();
+
         $categoryList = array();
         foreach ($result as $category) {
             $categoryList[$category->id] = $category;
         }
 
-        $this->decorateCategories($categoryList);
-    	return $categoryList;
+        if (!empty($categoryList)) {
+            $this->decorateCategories($categoryList);
+        }
+
+        return $categoryList;
     }
 
-    public function getTags($idea_id = 0) {
+    public function getTags($idea_id = 0, $board_id = 0) {
         $idea_id = (int) $idea_id;
+        if ($board_id == 0) {
+            $board_id = (int) $this->session->userdata('current_board_id');
+        }
+
+        if ($board_id == 0) {
+            // return empty array when no board
+            return array();
+        }
 
         $this->db->select('tags.*, COUNT(idea_tags_count.idea_id) as total_ideas');
         $this->db->from('tags');
+        $this->db->where('tags.board_id', $board_id);
         $this->db->join('idea_tags as idea_tags_count', 'idea_tags_count.tag_id = tags.id', 'left');
-        $this->db->join('ideas', 'ideas.id = idea_tags_count.idea_id AND ideas.status != "new"', 'left');
+        $this->db->join('ideas', "ideas.id = idea_tags_count.idea_id AND ideas.status != 'new'", "left");
 
         if ($idea_id != 0) {
             // get tags of specefic idea
@@ -57,6 +84,25 @@ class Get extends CI_Model
         }
 
         return $tagList;
+    }
+
+    public function getBoards() {
+        $result = $this->db->query('SELECT * FROM boards ORDER BY name')->result();
+        $boardList = array();
+        foreach ($result as $board) {
+            $boardList[$board->id] = $board;
+        }
+
+        $this->decorateBoards($boardList);
+    	return $boardList;
+    }
+    
+    public function getBoardById($board_id){
+    	$board_id = (int) $board_id;
+
+        return $this->get_row_by_id('boards', $board_id);
+
+        // return $this->decorateBoards($board);
     }
 
     /**
@@ -111,10 +157,17 @@ class Get extends CI_Model
     }
 
     public function getIdeas($orderby, $isdesc, $from, $limit, $status = array(), $categories = array()){
-        $query = "SELECT * FROM ideas ";
+        
+        $board_id = (int) $this->session->userdata('current_board_id');
+
+        if ($board_id == 0) {
+            // return empty array when no board
+            return array();
+        }
+        $query = "SELECT * FROM ideas WHERE board_id = " . (int)$board_id;
 
         if (count($categories)) {
-            $query .= "WHERE ( ";
+            $query .= " AND ( ";
             foreach ($categories as $catid) {
                 $sanitizedCategoryId = (int) $catid;
                 $query .= "categoryid='$sanitizedCategoryId' OR ";
@@ -123,8 +176,8 @@ class Get extends CI_Model
             $query .= ") ";
         }
         if (count($status)) {
-            if (count($categories)) $query .= "AND (";
-            else $query .= "WHERE ( ";
+            if (count($categories)) $query .= " AND (";
+            else $query .= " AND ( ";
             foreach ($status as $s) {
                 $s = $this->db->escape($s);
 
@@ -461,6 +514,16 @@ class Get extends CI_Model
         }
     }
 
+    public function board_id($name) {
+        $name = $this->db->escape($name);
+        $sql = $this->db->query("SELECT id FROM boards where name=$name");
+        if($sql->num_rows() == 0) return 0;
+        else{
+            $cat = $sql->row();
+            return $cat->id;
+        }
+    }
+
     public function email_config() {
         $config['protocol']     = 'smtp';
         $config['smtp_host']    = $this->getSetting('smtp-host');
@@ -517,6 +580,13 @@ class Get extends CI_Model
         foreach ($tags as &$tag) {
             $tag->url = base_url() . 'home/tag/' . $tag->id . '/';
             $tag->url .= $this->display->getParsedString($tag->name);
+        }
+    }
+    
+    private function decorateBoards(&$boards) {
+        foreach ($boards as &$board) {
+            $board->url = base_url() . 'home/board/' . $board->id . '/';
+            $board->url .= $this->display->getParsedString($board->name);
         }
     }
 

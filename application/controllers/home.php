@@ -23,8 +23,28 @@ class Home extends CI_Controller {
 
         $this->verifyBanning();
 	}
+
 	public function index() {
         $this->autoLoginByCookie();
+        $data = $this->getDefaultData();
+        $data['welcomeTitle'] = $this->get->getSetting('welcometext-title');
+        $data['welcomeDescription'] = $this->get->getSetting('welcometext-description');
+        $data['boards'] = $this->get->getBoards();
+
+		$this->load->view('_templates/header', $data);
+		$this->load->view('home/index', $data);
+		$this->load->view('_templates/footer', $data);
+	}
+
+	public function board($id) {
+        $id = (int) $id;
+        $this->autoLoginByCookie();
+        $board = $this->get->getBoardById($id);
+        if (!$board) {
+            redirect('home');
+        }
+        $this->session->set_userdata('current_board_id', $id);
+        $this->session->set_userdata('current_board_name', $board->name);
 
         //Use this function to parse $freename variables getDisplayHelpers();
         $data = $this->getDefaultData();
@@ -40,7 +60,7 @@ class Home extends CI_Controller {
 
 		$this->load->view('_templates/header', $data);
 		$this->load->view('_templates/tags', $data);
-		$this->load->view('home/index', $data);
+		$this->load->view('home/board', $data);
 		$this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
 
