@@ -46,7 +46,7 @@
                   <th>ID</th>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Admin Level</th>
+                  <th>Role</th>
                 </tr>
             </thead>
               <tbody>
@@ -63,7 +63,7 @@
                 <?php echo $user->email; ?>
               </td>
               <td>
-                <?php echo $user->isadmin; ?>
+                <?php echo $user->rname; ?>
               </td>
             </tr>
               <?php endforeach; ?>
@@ -78,9 +78,9 @@
               <label>Admin Level</label>
               <select class="form-control" name="level" style="width:300px">
                 <option value="0">No Administration Rights</option>
-                <option value="1">Ideas and Comments (Level 1)</option>
-                <option value="2">Level 1 + User Management (Level 2)</option>
-                <option value="3">Full Administration Rights (Level 3)</option>
+                <option value="1">Ideas and Comments (Editor)</option>
+                <option value="2">Level 1 + User Management (Admin)</option>
+                <option value="3">Full Administration Rights (Super Admin)</option>
               </select>
             </div>
             <div class="form-group">
@@ -148,6 +148,7 @@
         </form>
       </div>
       <div id="tagtable" style="display:none">
+        <?php if (has_permission('add-tag')): ?>
         <h4>Add a new Tag</h4>
         <form role="form" method="post" action="<?php echo base_url() . 'adminaction/addtag'?>">
             <div class="form-group">
@@ -159,6 +160,8 @@
               <button name="add-tag" type="submit" class="btn btn-primary">Add Tag</button>
             </div>
         </form>
+        <?php endif; ?>
+        <?php if (has_permission('delete-tag')): ?>
         <h4>Delete a tag</h4>
         <form role="form" method="post" action="<?php echo base_url() . 'adminaction/deletetag'?>">
           <div class="form-group">
@@ -177,6 +180,8 @@
               <button name="delete-tag" type="submit" class="btn btn-primary">Delete tag</button>
           </div>
         </form>
+        <?php endif; ?>
+        <?php if (has_permission('update-tag')): ?>
         <h4>Change names</h4>
         <form role="form" name="update-form" method="post" action="<?php echo base_url() . 'adminaction/updatetags'?>">
             <?php foreach ($tags as $tag): ?>
@@ -188,6 +193,7 @@
               <button name="update-names" type="submit" class="btn btn-primary">Update names</button>
             </div>
         </form>
+        <?php endif; ?>
       </div>
       <div id="boardtable" style="display:none">
         <h4>Add a new Board</h4>

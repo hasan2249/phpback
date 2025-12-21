@@ -26,6 +26,7 @@
         <li id="table1" class="active"><a onclick="showtable('newideastable','table1');">New Ideas <span class="badge"><?php echo $newideas_num;?></span></a></li>
         <li id="table2"><a onclick="showtable('allideastable','table2');">All Ideas </a></li>
         <li id="table3"><a onclick="showtable('commentstable','table3');">Flagged comments</a></li>
+        <li id="table5"><a onclick="showtable('tagtable','table5');">Tags</a></li>
       </ul>
       <div id="listing">
         <table id="newideastable" class="table table-condensed" style="">
@@ -64,7 +65,7 @@
                 <a href="<?php echo base_url() . 'home/idea/' . $idea->id . "/" . $freename;?>" target="_blank"><?php echo $idea->title; ?></a>
               </td>
               <td>
-                <?php echo $categories[$idea->categoryid]->name; ?>
+                <?php echo $all_categories[$idea->categoryid]->name; ?>
               </td>
               <td>
                 <?php echo $idea->comments; ?> Comments
@@ -122,7 +123,7 @@
               </td>
               <td style="padding-left:10px;width:250px;vertical-align:top">
               <div class="form-group">
-                <?php foreach ($categories as $category): ?>
+                <?php foreach ($all_categories as $category): ?>
                   <label class="checkbox">
                     <input type="checkbox" <?php $s = 'category-' . $category->id; if($form[$s]): ?>checked="checked" <?php endif; ?> name="category-<?php echo $category->id;?>" data-toggle="checkbox">
                     <?php echo $category->name; ?>
@@ -191,7 +192,7 @@
             <a href="<?php echo base_url() . 'home/idea/' . $idea->id . "/" . $freename;?>" target="_blank"><?php echo $idea->title; ?></a>
           </td>
           <td>
-            <?php echo $categories[$idea->categoryid]->name; ?>
+            <?php echo $all_categories[$idea->categoryid]->name; ?>
           </td>
           <td>
             <?php echo $idea->votes; ?> Votes
@@ -239,6 +240,54 @@
                 <?php endforeach; ?>
           </tbody>
         </table>
+        <div id="tagtable" style="display:none">
+        <?php if (has_permission('add-tag')): ?>
+        <h4>Add a new Tag</h4>
+        <form role="form" method="post" action="<?php echo base_url() . 'adminaction/addtag'?>">
+            <div class="form-group">
+              <label>Tag name</label>
+              <input type="text" class="form-control" name="name" style="width:300px">
+              <small>(put an existing tag name to change its description)</small>
+            </div>
+            <div class="form-group">
+              <button name="add-tag" type="submit" class="btn btn-primary">Add Tag</button>
+            </div>
+        </form>
+        <?php endif; ?>
+        <?php if (has_permission('delete-tag')): ?>
+        <h4>Delete a tag</h4>
+        <form role="form" method="post" action="<?php echo base_url() . 'adminaction/deletetag'?>">
+          <div class="form-group">
+              <label>Select tag to delete</label>
+              <select class="form-control" name="tagid" style="width:300px">
+                <?php foreach ($tags as $tag): ?>
+                  <option value="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></option>
+                <?php endforeach; ?>
+              </select>
+              <label name="delete-ideas" class="checkbox" for="checkbox1">
+                <input type="checkbox" value="" id="checkbox1" name="ideas" data-toggle="checkbox">
+                Delete tag's ideas
+              </label>
+          </div>
+          <div class="form-group">
+              <button name="delete-tag" type="submit" class="btn btn-primary">Delete tag</button>
+          </div>
+        </form>
+        <?php endif; ?>
+        <?php if (has_permission('update-tag')): ?>
+        <h4>Change names</h4>
+        <form role="form" name="update-form" method="post" action="<?php echo base_url() . 'adminaction/updatetags'?>">
+            <?php foreach ($tags as $tag): ?>
+              <div class="form-group">
+                <input type="text" class="form-control" name="tag-<?php echo $tag->id;?>" style="width:300px" value="<?php echo $tag->name;?>">
+              </div>
+            <?php endforeach; ?>
+            <div class="form-group">
+              <button name="update-names" type="submit" class="btn btn-primary">Update names</button>
+            </div>
+        </form>
+        <?php endif; ?>
+      </div>
     </div>
 </div>
 </div>

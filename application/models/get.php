@@ -46,6 +46,17 @@ class Get extends CI_Model
         return $categoryList;
     }
 
+    public function getAllCategories() {
+        $result = $this->db->query('SELECT * FROM categories ORDER BY name')->result();
+        $boardList = array();
+        foreach ($result as $board) {
+            $boardList[$board->id] = $board;
+        }
+
+        $this->decorateCategories($boardList);
+    	return $boardList;
+    }
+
     public function getTags($idea_id = 0, $board_id = 0) {
         $idea_id = (int) $idea_id;
         if ($board_id == 0) {
@@ -84,6 +95,18 @@ class Get extends CI_Model
         }
 
         return $tagList;
+    }
+
+    
+    public function getAllTags() {
+        $result = $this->db->query('SELECT * FROM tags ORDER BY name')->result();
+        $boardList = array();
+        foreach ($result as $tag) {
+            $boardList[$tag->id] = $tag;
+        }
+
+        $this->decorateTags($boardList);
+    	return $boardList;
     }
 
     public function getBoards() {
@@ -156,45 +179,44 @@ class Get extends CI_Model
         return $query->num_rows();
     }
 
-    public function getIdeas($orderby, $isdesc, $from, $limit, $status = array(), $categories = array()){
-        
-        $board_id = (int) $this->session->userdata('current_board_id');
+    public function getIdeas($orderby, $isdesc, $from, $limit, $status = array(), $categories = array(), $isAdmin = false) {
 
-        if ($board_id == 0) {
-            // return empty array when no board
-            return array();
+        $sql = "SELECT * FROM ideas";
+        $where = array();
+
+        if (!$isAdmin) {
+            $board_id = (int) $this->session->userdata('current_board_id');
+            if ($board_id == 0) return array();
+            $where[] = "board_id = $board_id";
         }
-        $query = "SELECT * FROM ideas WHERE board_id = " . (int)$board_id;
 
-        if (count($categories)) {
-            $query .= " AND ( ";
+        if (!empty($categories)) {
+            $cat_list = array();
             foreach ($categories as $catid) {
-                $sanitizedCategoryId = (int) $catid;
-                $query .= "categoryid='$sanitizedCategoryId' OR ";
+                $cat_list[] = "categoryid = " . (int)$catid;
             }
-            $query = substr($query, 0, -3);
-            $query .= ") ";
+            $where[] = "(" . implode(" OR ", $cat_list) . ")";
         }
-        if (count($status)) {
-            if (count($categories)) $query .= " AND (";
-            else $query .= " AND ( ";
+
+        if (!empty($status)) {
+            $status_list = array();
             foreach ($status as $s) {
-                $s = $this->db->escape($s);
-
-                $query .= "status=$s OR ";
+                $status_list[] = "status = " . $this->db->escape($s);
             }
-            $query = substr($query, 0, -3);
-            $query .= ") ";
+            $where[] = "(" . implode(" OR ", $status_list) . ")";
         }
-        $orderby = $this->db->escape($orderby);
-        $query .= "ORDER BY $orderby ";
 
-        if ($isdesc) $query .= "DESC";
-        else $query .= "ASC";
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
 
-        $query .= " LIMIT $from, $limit";
+        $orderby = str_replace(array("'", "`", ";"), "", $orderby); 
+        $direction = $isdesc ? 'DESC' : 'ASC';
+        $sql .= " ORDER BY $orderby $direction";
 
-        $ideas = $this->db->query($query)->result();
+        $sql .= " LIMIT " . (int)$from . ", " . (int)$limit;
+
+        $ideas = $this->db->query($sql)->result();
 
         return $this->decorateIdeas($ideas);
     }
@@ -323,10 +345,37 @@ class Get extends CI_Model
         $sql = $this->db->query("SELECT * FROM users WHERE email=" . $this->db->escape($email));
         if($sql->num_rows() != 0){
             $user = $sql->row();
-            if ($this->hashing->matches($password, $user->pass)) return $user->id;
+            if ($this->hashing->matches($password, $user->pass)) {
+                // 1. جلب الصلاحيات بناءً على رقم الدور (isadmin)
+                $permissions = $this->get_user_permissions($user->isadmin);
+                
+                // 2. تحضير بيانات الجلسة (Session Data)
+                $session_data = array(
+                    'user_id'     => $user->id,
+                    'email'       => $user->email,
+                    'role_id'     => $user->isadmin,
+                    'permissions' => $permissions, // هنا نخزن مصفوفة الصلاحيات
+                    'logged_in'   => TRUE
+                );
+                
+                // 3. حفظ البيانات في السيشن
+                $this->session->set_userdata($session_data);
+                return $user->id;
+            }
             else return 0;
         }
         else return 0;
+    }
+
+    public function get_user_permissions($role_id) {
+        $this->db->select('p.perm_key');
+        $this->db->from('permissions p');
+        $this->db->join('role_permissions rp', 'rp.permission_id = p.id');
+        $this->db->where('rp.role_id', $role_id);
+        $query = $this->db->get();
+        
+        // transfer result to array of permessions: ['edit_user', 'delete_user']
+        return array_column($query->result_array(), 'perm_key');
     }
 
     public function getSetting($name){
@@ -473,6 +522,16 @@ class Get extends CI_Model
         return $sql->result();
     }
 
+    public function get_all_roles() {
+        $sql = $this->db->query("SELECT * FROM roles");
+        return $sql->result();
+    }
+
+    public function get_all_permissions() {
+        $sql = $this->db->query("SELECT * FROM permissions");
+        return $sql->result();
+    }
+
     public function getUserVotes($userid) {
         $userid = (int) $userid;
         $sql = $this->db->query("SELECT * FROM votes WHERE userid='$userid'");
@@ -490,7 +549,7 @@ class Get extends CI_Model
     }
 
     public function get_admin_users() {
-        $sql = $this->db->query("SELECT * FROM users WHERE isadmin <> 0 ORDER BY id");
+        $sql = $this->db->query("SELECT users.*,roles.name as rname FROM users join roles on users.isadmin = roles.id WHERE isadmin <> 0 ORDER BY roles.id");
         return $sql->result();
     }
 

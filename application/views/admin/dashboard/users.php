@@ -25,6 +25,8 @@
         <li id="table1" class="active"><a onclick="showtable2('newuserstable','table1');">New Users</a></li>
         <li id="table2"><a onclick="showtable2('bannedtable','table2');">Banned List </a></li>
         <li id="table3"><a onclick="showtable2('bantable','table3');">Ban User</a></li>
+        <li id="table4"><a onclick="showtable2('roletable','table4');">Roles</a></li>
+        <li id="table5"><a onclick="showtable2('permissiontable','table5');">Permissions</a></li>
       </ul>
         <table id="newuserstable" class="table table-condensed" style="">
           <thead>
@@ -99,6 +101,50 @@
                   <div class="pull-right">
                     <a href="<?php echo base_url() . 'adminaction/unban/' . $user->id;?>"><button type="submit" class="btn btn-warning btn-sm" style="width:130px">Disable ban</button></a>
                   </div>
+              </td>
+            </tr>
+              <?php endforeach; ?>
+          </tbody>
+        </table>
+        <table id="roletable" class="table table-condensed" style="display:none">
+          <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Role</th>
+                  <th></th>
+                </tr>
+            </thead>
+              <tbody>
+            <?php foreach ($roles as $role): ?>
+              <?php $freename = str_replace(" ", "-", $role->name); ?>
+            <tr>
+              <td>
+                <?php echo $role->id;?>
+              </td>
+              <td>
+                <?php echo $freename; ?>
+              </td>
+            </tr>
+              <?php endforeach; ?>
+          </tbody>
+        </table>
+        <table id="permissiontable" class="table table-condensed" style="display:none">
+          <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Permission</th>
+                  <th></th>
+                </tr>
+            </thead>
+              <tbody>
+            <?php foreach ($permissions as $permission): ?>
+              <?php $permissionname = str_replace(" ", "-", $permission->perm_key); ?>
+            <tr>
+              <td>
+                <?php echo $permission->id;?>
+              </td>
+              <td>
+                <?php echo $permissionname; ?>
               </td>
             </tr>
               <?php endforeach; ?>

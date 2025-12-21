@@ -248,6 +248,7 @@ class Home extends CI_Controller {
         return array(
             'title' => $this->get->getSetting('title'),
             'categories' => $this->get->getCategories(),
+            'all_categories' => $this->get->getAllCategories(),
             'all_tags' => $this->get->getTags(),
             'lang' => $this->lang->language,
         );

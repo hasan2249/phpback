@@ -64,6 +64,9 @@ class Admin extends CI_Controller {
         $data['newideas_num'] = $this->get->get_new_ideas_num();
         $data['flags'] = $this->get->get_flags();
         $data['categories'] = $this->get->getCategories();
+        $data['all_categories'] = $this->get->getAllCategories();
+        $data['tags'] = $this->get->getAllTags();
+        
         if(!@isset($_POST['search'])){
             $data['form'] = array(
                 "status-completed" => 0,
@@ -75,7 +78,7 @@ class Admin extends CI_Controller {
                 "isdesc" => 1
                 );
             $cat = array();
-            foreach ($data['categories'] as $t) {
+            foreach ($data['all_categories'] as $t) {
                 $cat[] = $t->id;
                 $s = "category-".$t->id;
                 $data['form'][$s] = 1;
@@ -101,7 +104,7 @@ class Admin extends CI_Controller {
             if($this->input->post('status-declined', true)) $st[] = "declined";
 
             $cat = array();
-            foreach ($data['categories'] as $t) {
+            foreach ($data['all_categories'] as $t) {
                 $s = "category-".$t->id;
                 if($this->input->post('category-' . $t->id, true)){
                     $cat[] = $t->id;
@@ -118,7 +121,7 @@ class Admin extends CI_Controller {
             $data['form']['orderby']
         ));
 
-        $data['ideas'] = $this->get->getIdeas($data['form']['orderby'], $data['form']['isdesc'], 0, 150, $st, $cat);
+        $data['ideas'] = $this->get->getIdeas($data['form']['orderby'], $data['form']['isdesc'], 0, 150, $st, $cat,true);
 
         $this->load->view('admin/dashboard/header', $data);
         $this->load->view('admin/dashboard/ideas', $data);
@@ -129,6 +132,8 @@ class Admin extends CI_Controller {
 
         $data['users'] = $this->get->get_users();
         $data['banned'] = $this->get->get_users('banned', 100);
+        $data['roles'] = $this->get->get_all_roles();
+        $data['permissions'] = $this->get->get_all_permissions();
 
         if($idban) $data['idban'] = $idban;
         $this->load->view('admin/dashboard/header', $data);

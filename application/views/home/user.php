@@ -128,7 +128,7 @@
 						<a href="<?= $idea->url;?>"><?= $idea->title; ?></a>
 					</td>
 					<td>
-						<?= $categories[$idea->categoryid]->name; ?>
+						<?= $all_categories[$idea->categoryid]->name; ?>
 					</td>
 					<td>
 						<?= $idea->comments; ?> <?= $lang['label_comments']; ?>
