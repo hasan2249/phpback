@@ -209,9 +209,9 @@ class Home extends CI_Controller {
         $data['ban'] = $ban;
 
         $this->load->view('_templates/header', $data);
-		$this->load->view('_templates/tags', $data);
+		// $this->load->view('_templates/tags', $data);
 		$this->load->view('home/login', $data);
-		$this->load->view('_templates/menu', $data);
+		// $this->load->view('_templates/menu', $data);
 		$this->load->view('_templates/footer', $data);
     }
 

@@ -1,4 +1,4 @@
-<div class="col-md-7">
+<div class="col-md-6 col-sm-push-3">
   <small><ol class="breadcrumb">
         <li><a href="<?php echo base_url();?>">Feedback</a></li>
         <li class="active"><?php echo $lang['label_log_in']; ?></li>
@@ -25,5 +25,21 @@
     </label>
     <button type="submit" class="btn btn-primary"><?php echo $lang['label_log_in']; ?></button> <a href="<?php echo base_url() . 'home/register';?>"><span style="padding-left:10px"><?php echo $lang['text_create_an_account']; ?></span></a>
   </form>
+  <div>
+    <hr/>
+    <p>Import <b>phpback.sql</b> in root of project to database engine</p>
+    <p class="h6">Super admin:</p>
+    <label>email: admin@admin.com</label>
+    <br/>
+    <label>password: 123456</label>
+    <hr/>
+    <p class="h6">Admin:</p>
+    <label>email: user@user.com</label><br/>
+    <label>password: 123456</label>
+    <hr/>
+    <p class="h6">Editor:</p>
+    <label>email: editor@admin.com</label><br/>
+    <label>password: 123456</label>
+  </div>
 </div>
 <div class="col-md-2"></div>
